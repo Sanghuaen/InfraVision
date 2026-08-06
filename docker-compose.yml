@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:16
+    # PostgreSQL Version 16
+
+    container_name: infravision-postgres
+
+    restart: always
+
+    environment:
+      POSTGRES_USER: admin #create User =admin 
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: infravision #create Database = infravision
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+
+    container_name: infravision-pgadmin
+
+    restart: always
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@infravision.com
+      PGADMIN_DEFAULT_PASSWORD: password
+
+    ports:
+      - "5050:80" #left side port 5050, right side port 80
+
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
