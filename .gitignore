@@ -1,35 +1,126 @@
+# =========================
 # Node.js
-node_modules/
-dist/
-build/
+# =========================
 
-# Logs
-logs/
-*.log
-npm-debug.log*
+**/node_modules/
+**/dist/
+**/build/
+**/coverage/
 
-# Environment
+# Frontend build
+frontend/dist/
+frontend/dist-ssr/
+
+# Next.js (if used later)
+frontend/.next/
+
+
+# =========================
+# Prisma
+# =========================
+
+backend/generated/prisma/
+
+
+# =========================
+# Python
+# =========================
+
+agent/.venv/
+agent/__pycache__/
+agent/**/*.pyc
+
+
+# =========================
+# Environment Variables
+# =========================
+
 .env
 .env.*
+!.env.example
 
+
+# =========================
+# Logs
+# =========================
+
+**/logs/
+**/*.log
+**/*-debug.log
+**/*-error.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+
+# =========================
+# Testing
+# =========================
+
+**/.nyc_output/
+
+
+# =========================
+# Temporary
+# =========================
+
+**/.temp/
+**/.tmp/
+
+
+# =========================
+# Runtime
+# =========================
+
+**/pids/
+**/*.pid
+**/*.seed
+**/*.pid.lock
+
+
+# =========================
 # IDE
-.vscode/
-.idea/
+# =========================
 
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
+# =========================
 # OS
+# =========================
+
 .DS_Store
 Thumbs.db
 
-# Python
-__pycache__/
-*.pyc
-.venv/
 
-# Prisma
-prisma/dev.db
+# =========================
+# Diagnostic Reports
+# =========================
 
-# Coverage
-coverage/
 
-# Temporary
-tmp/
+# AI / Development Tools
+**/.agents/
+**/.claude/
+**/.windsurf/
+
+
+report.*.*.*.*.json
