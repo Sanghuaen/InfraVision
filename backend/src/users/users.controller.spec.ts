@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
+import { beforeEach, describe, it } from 'node:test';
+import assert from 'node:assert/strict';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -13,6 +15,7 @@ describe('UsersController', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    assert.ok(controller);
   });
 });
+

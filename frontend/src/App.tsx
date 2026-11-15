@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Dashboard from './pages/Dashboard';
+import Servers from './pages/Servers';
 import { MainLayout } from './components/layout/MainLayout';
 
 function PlaceholderPage({
@@ -36,7 +37,7 @@ function App() {
 
           <Route
             path="/servers"
-            element={<PlaceholderPage title="Servers" />}
+            element={<Servers />}
           />
 
           <Route

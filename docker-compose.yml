@@ -12,11 +12,11 @@ services:
 
     environment:
       POSTGRES_USER: admin #create User =admin 
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: adminpassword
       POSTGRES_DB: infravision #create Database = infravision
 
     ports:
-      - "5432:5432"
+      - "5436:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -30,7 +30,7 @@ services:
 
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@infravision.com
-      PGADMIN_DEFAULT_PASSWORD: password
+      PGADMIN_DEFAULT_PASSWORD: newpassword
 
     ports:
       - "5050:80" #left side port 5050, right side port 80
