@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Servers from './pages/Servers';
 import { MainLayout } from './components/layout/MainLayout';
+import Docker from './pages/Docker';
 
 function PlaceholderPage({
   title,
@@ -42,7 +43,7 @@ function App() {
 
           <Route
             path="/docker"
-            element={<PlaceholderPage title="Docker" />}
+            element={<Docker />}
           />
 
           <Route
