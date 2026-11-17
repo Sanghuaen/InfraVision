@@ -1,5 +1,8 @@
 
 import type { ServerSummary } from '../types/server';
+import type { NetworkInterface } from '../types/network';
+import type { DiskInfo } from '../types/storage';
+import type { WindowsLog } from '../types/log';
 
 const API_BASE_URL = 'http://localhost:3000';
 
@@ -33,8 +36,20 @@ export interface DockerContainer {
   ports: Record<string, unknown>;
 }
 
+export interface ProcessInfo {
+  pid: number;
+  name: string;
+  username: string | null;
+  status: string;
+  cpu_percent: number;
+  memory_mb: number;
+}
+
 export interface LatestMetric {
+  disk: DiskInfo;
   docker: DockerContainer[];
+  processes: ProcessInfo[];
+  network: NetworkInterface[];
   collectedAt: string;
 }
 
@@ -53,3 +68,25 @@ export async function getLatestMetric(
 
   return response.json();
 }
+
+
+// ==============================
+// Windows Event Logs
+// ==============================
+
+export async function getServerLogs(
+  agentId: string,
+): Promise<WindowsLog[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/servers/${encodeURIComponent(agentId)}/logs`,
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch server logs: ${response.status}`,
+    );
+  }
+
+  return response.json();
+}
+

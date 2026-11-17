@@ -29,6 +29,7 @@ model Server {
   ownerId   Int
   agentId   String   @unique
   metrics   Metric[]
+  logs      Log[]
   owner     User     @relation(fields: [ownerId], references: [id])
 }
 
@@ -38,8 +39,29 @@ model Metric {
   cpu         Json
   memory      Json
   disk        Json
+  network     Json  @default("{}")
   processes   Json
   docker      Json
   collectedAt DateTime @default(now())
   server      Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+}
+
+model Log {
+  id        Int      @id @default(autoincrement())
+  serverId  Int
+  recordId  Int
+  timestamp DateTime
+  level     String
+  source    String
+  eventId   Int
+  channel   String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  @@unique([serverId, channel, recordId])
+  @@index([serverId, timestamp])
+  @@index([serverId, level])
+  @@index([serverId, channel])
 }

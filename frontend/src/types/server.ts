@@ -10,5 +10,5 @@ export interface ServerSummary {
   disk: number;
   processCount: number;
   dockerContainerCount: number;
-  collectedAt: string;
+  collectedAt: string | null;
 }

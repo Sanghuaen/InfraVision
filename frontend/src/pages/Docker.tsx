@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import {
     Box,
     RefreshCw,
-    Server,
     CircleCheck,
     CircleX,
     Clock3,
@@ -57,11 +56,16 @@ function Docker() {
         async function loadServers() {
             try {
                 const data = await getServerSummary();
-
                 setServers(data);
 
                 if (data.length > 0) {
-                    setSelectedAgentId(data[0].agentId);
+                    const defaultServer = data.find(
+                        (server) => server.agentId === 'test-server'
+                    ) ?? data[0];
+
+                    setSelectedAgentId((current) =>
+                        current || defaultServer.agentId
+                    );
                 } else {
                     setLoading(false);
                 }

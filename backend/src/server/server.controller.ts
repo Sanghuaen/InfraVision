@@ -34,6 +34,13 @@ export class ServerController {
     return this.serverService.getServerMetrics(id);
   }
 
+  @Get(':id/logs')
+  getServerLogs(
+    @Param('id') id: string,
+  ) {
+    return this.serverService.getServerLogs(id);
+  }
+
 
 
   @Get(':id')
@@ -48,6 +55,7 @@ export class ServerController {
     @Param('id') id: string,
     @Body() data: MetricsDto,
   ) {
+
     return this.serverService.receiveMetrics(id, data);
   }
 }

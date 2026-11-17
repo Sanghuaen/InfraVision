@@ -66,10 +66,19 @@ export default function Dashboard() {
          * ใช้ collectedAt จาก Backend
          * หาเวลาที่ใหม่ที่สุดจาก Server ทั้งหมด
          */
+
         if (data.length > 0) {
           const latest = data.reduce((latestServer, server) => {
-            return new Date(server.collectedAt) >
-              new Date(latestServer.collectedAt)
+            if (!server.collectedAt) {
+              return latestServer;
+            }
+
+            if (!latestServer.collectedAt) {
+              return server;
+            }
+
+            return new Date(server.collectedAt).getTime() >
+              new Date(latestServer.collectedAt).getTime()
               ? server
               : latestServer;
           });
@@ -78,6 +87,7 @@ export default function Dashboard() {
         } else {
           setLastUpdated(null);
         }
+
       } catch (err) {
         console.error(err);
 
@@ -128,17 +138,17 @@ export default function Dashboard() {
   const averageCpu =
     servers.length > 0
       ? servers.reduce(
-          (sum, server) => sum + server.cpu,
-          0,
-        ) / servers.length
+        (sum, server) => sum + server.cpu,
+        0,
+      ) / servers.length
       : 0;
 
   const averageMemory =
     servers.length > 0
       ? servers.reduce(
-          (sum, server) => sum + server.memory,
-          0,
-        ) / servers.length
+        (sum, server) => sum + server.memory,
+        0,
+      ) / servers.length
       : 0;
 
   const totalContainers = servers.reduce(
@@ -230,11 +240,10 @@ export default function Dashboard() {
             className="group inline-flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-4 py-2 text-sm text-slate-300 transition-all duration-200 hover:border-slate-700 hover:bg-slate-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <RefreshCw
-              className={`h-4 w-4 ${
-                refreshing
+              className={`h-4 w-4 ${refreshing
                   ? 'animate-spin'
                   : 'transition-transform duration-500 group-hover:rotate-180'
-              }`}
+                }`}
             />
 
             {refreshing ? 'Updating' : 'Refresh'}

@@ -24,9 +24,25 @@ export class MetricsDto {
 
   @IsOptional()
   @IsArray()
+  network?: any[];
+
+  @IsOptional()
+  @IsArray()
   processes?: any[];
 
   @IsOptional()
   @IsArray()
   docker?: any[];
+
+    @IsOptional()
+  @IsArray()
+  logs?: {
+    recordId: number;
+    timestamp: string;
+    level: string;
+    source: string;
+    eventId: number;
+    channel: string;
+    message: string;
+  }[];
 }

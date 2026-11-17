@@ -5,6 +5,8 @@ from disk_reader import get_disk_info
 from process_reader import get_processes
 from docker_reader import get_docker_containers
 from sender import send_metrics
+from network_reader import get_network_info
+from logs_reader import get_windows_logs
 
 import platform
 import socket
@@ -24,8 +26,10 @@ def collect_system_info():
         "cpu": get_cpu_info(),
         "memory": get_memory_info(),
         "disk": get_disk_info(),
+        "network": get_network_info(),
         "processes": get_processes(),
         "docker": get_docker_containers(),
+        "logs": get_windows_logs(),
     }
 
 

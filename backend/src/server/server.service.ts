@@ -42,6 +42,11 @@ export class ServerService {
       );
     }
 
+    console.log(
+      'PROCESSES RECEIVED:',
+      JSON.stringify(data.processes, null, 2),
+    );
+
     const metric = await this.prisma.metric.create({
       data: {
         serverId: server.id,
@@ -49,6 +54,7 @@ export class ServerService {
         cpu: data.cpu ?? {},
         memory: data.memory ?? {},
         disk: data.disk ?? {},
+        network: data.network ?? [],
         processes: data.processes ?? [],
         docker: data.docker ?? [],
 
@@ -57,6 +63,29 @@ export class ServerService {
           : new Date(),
       },
     });
+
+    // Save Windows Event Logs
+    if (Array.isArray(data.logs) && data.logs.length > 0) {
+      await this.prisma.log.createMany({
+        data: data.logs.map((log: any) => ({
+          serverId: server.id,
+          recordId: log.recordId,
+          timestamp: new Date(log.timestamp),
+          level: log.level,
+          source: log.source,
+          eventId: log.eventId,
+          channel: log.channel,
+          message: log.message,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+
+    console.log(
+      'PROCESSES AFTER SAVE:',
+      JSON.stringify(metric.processes, null, 2),
+    );
 
     return {
       success: true,
@@ -173,4 +202,28 @@ export class ServerService {
 
     return summary;
   }
+
+  async getServerLogs(agentId: string) {
+  const server = await this.prisma.server.findUnique({
+    where: {
+      agentId,
+    },
+  });
+
+  if (!server) {
+    throw new NotFoundException(
+      `Server with agentId "${agentId}" not found`,
+    );
+  }
+
+  return this.prisma.log.findMany({
+    where: {
+      serverId: server.id,
+    },
+    orderBy: {
+      timestamp: 'desc',
+    },
+    take: 100,
+  });
+}
 }
