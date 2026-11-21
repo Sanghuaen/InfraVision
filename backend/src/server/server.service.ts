@@ -42,10 +42,6 @@ export class ServerService {
       );
     }
 
-    console.log(
-      'PROCESSES RECEIVED:',
-      JSON.stringify(data.processes, null, 2),
-    );
 
     const metric = await this.prisma.metric.create({
       data: {
@@ -81,11 +77,6 @@ export class ServerService {
       });
     }
 
-
-    console.log(
-      'PROCESSES AFTER SAVE:',
-      JSON.stringify(metric.processes, null, 2),
-    );
 
     return {
       success: true,
@@ -204,26 +195,26 @@ export class ServerService {
   }
 
   async getServerLogs(agentId: string) {
-  const server = await this.prisma.server.findUnique({
-    where: {
-      agentId,
-    },
-  });
+    const server = await this.prisma.server.findUnique({
+      where: {
+        agentId,
+      },
+    });
 
-  if (!server) {
-    throw new NotFoundException(
-      `Server with agentId "${agentId}" not found`,
-    );
+    if (!server) {
+      throw new NotFoundException(
+        `Server with agentId "${agentId}" not found`,
+      );
+    }
+
+    return this.prisma.log.findMany({
+      where: {
+        serverId: server.id,
+      },
+      orderBy: {
+        timestamp: 'desc',
+      },
+      take: 100,
+    });
   }
-
-  return this.prisma.log.findMany({
-    where: {
-      serverId: server.id,
-    },
-    orderBy: {
-      timestamp: 'desc',
-    },
-    take: 100,
-  });
-}
 }

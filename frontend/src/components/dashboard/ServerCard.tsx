@@ -1,3 +1,4 @@
+//ServerCard.tsx
 import {
   Activity,
   Box,

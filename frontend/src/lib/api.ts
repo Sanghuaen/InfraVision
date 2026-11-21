@@ -53,6 +53,19 @@ export interface LatestMetric {
   collectedAt: string;
 }
 
+
+export interface MetricHistory {
+  id: number;
+  cpu: Record<string, unknown>;
+  memory: Record<string, unknown>;
+  disk: DiskInfo;
+  network: NetworkInterface[];
+  processes: ProcessInfo[];
+  docker: DockerContainer[];
+  collectedAt: string;
+}
+
+
 export async function getLatestMetric(
   agentId: string,
 ): Promise<LatestMetric> {
@@ -68,6 +81,24 @@ export async function getLatestMetric(
 
   return response.json();
 }
+
+
+export async function getServerMetrics(
+  agentId: string,
+): Promise<MetricHistory[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/servers/${encodeURIComponent(agentId)}/metrics`,
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch metric history: ${response.status}`,
+    );
+  }
+
+  return response.json();
+}
+
 
 
 // ==============================

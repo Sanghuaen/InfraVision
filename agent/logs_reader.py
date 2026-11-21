@@ -6,8 +6,10 @@ from datetime import datetime, timezone
 
 
 LOG_CHANNELS = ["Application", "System"]
-
 MAX_EVENTS = 50
+
+# เก็บ Record ID ล่าสุดแยกตาม Channel
+_last_record_ids = {}
 
 
 def get_event_level(event_type):
@@ -34,21 +36,33 @@ def read_event_logs(channel, max_events=MAX_EVENTS):
             | win32evtlog.EVENTLOG_SEQUENTIAL_READ
         )
 
-        events = win32evtlog.ReadEventLog(
-            handle,
-            flags,
-            0
-        )
+        events = win32evtlog.ReadEventLog(handle, flags, 0)
 
-        for event in events[:max_events]:
+        if not events:
+            return logs
+
+        latest_record_id = _last_record_ids.get(channel)
+
+        # รอบแรก: อ่าน Event ล่าสุดไม่เกิน max_events
+        # รอบถัดไป: อ่านเฉพาะ Event ใหม่
+        if latest_record_id is None:
+            selected_events = events[:max_events]
+        else:
+            selected_events = [
+                event for event in events
+                if event.RecordNumber > latest_record_id
+            ]
+
+        new_record_ids = []
+
+        for event in selected_events:
             try:
                 source = event.SourceName
                 event_id = event.EventID & 0xFFFF
 
                 try:
                     message = win32evtlogutil.SafeFormatMessage(
-                        event,
-                        channel
+                        event, channel
                     )
                 except Exception:
                     message = "Unable to format event message"
@@ -68,8 +82,13 @@ def read_event_logs(channel, max_events=MAX_EVENTS):
                     "message": message.strip(),
                 })
 
+                new_record_ids.append(event.RecordNumber)
+
             except Exception:
                 continue
+
+        if new_record_ids:
+            _last_record_ids[channel] = max(new_record_ids)
 
     except Exception as error:
         print(f"Failed to read {channel} logs: {error}")
